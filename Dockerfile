@@ -1,10 +1,20 @@
-FROM alpine:3.4
+FROM alpine:3.5
 MAINTAINER Ilya Stepanov <dev@ilyastepanov.com>
 
-ENV MD5_CHECKSUM 9b9ad79421a1bdad9c133e859140f3f2
-
-RUN apk --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ add \
-    php7 php7-fpm php7-gd php7-session php7-xml supervisor curl tar unzip
+RUN apk --no-cache add \
+    php7 php7-fpm php7-gd php7-session php7-xml supervisor curl tar unzip || \
+	(sed -i -e 's/dl-cdn/dl-1/g' /etc/apk/repositories && apk --no-cache add \
+    php7 php7-fpm php7-gd php7-session php7-xml supervisor curl tar unzip) || \
+	(sed -i -e 's/dl-cdn/dl-2/g' /etc/apk/repositories && apk --no-cache add \
+    php7 php7-fpm php7-gd php7-session php7-xml supervisor curl tar unzip) || \
+	(sed -i -e 's/dl-cdn/dl-3/g' /etc/apk/repositories && apk --no-cache add \
+    php7 php7-fpm php7-gd php7-session php7-xml supervisor curl tar unzip) || \
+	(sed -i -e 's/dl-cdn/dl-4/g' /etc/apk/repositories && apk --no-cache add \
+    php7 php7-fpm php7-gd php7-session php7-xml supervisor curl tar unzip) || \
+	(sed -i -e 's/dl-cdn/dl-5/g' /etc/apk/repositories && apk --no-cache add \
+    php7 php7-fpm php7-gd php7-session php7-xml supervisor curl tar unzip) || \
+	(sed -i -e 's/dl-cdn/dl-6/g' /etc/apk/repositories && apk --no-cache add \
+    php7 php7-fpm php7-gd php7-session php7-xml supervisor curl tar unzip)
 
 RUN mkdir -p /var/www && \
     cd /var/www && \
