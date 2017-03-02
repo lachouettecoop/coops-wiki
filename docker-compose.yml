@@ -1,16 +1,16 @@
 web:
-	image: nginx
-	links:
-	- dokuwiki
-	volumes:
-	- ./nginx.conf:/etc/nginx/nginx.conf:ro
-	environment:
-	- VIRTUAL_HOST=wiki.supermarches-cooperatifs.fr
-	ports:
-	- "80:80"
+  image: nginx
+  links:
+  - dokuwiki
+  volumes:
+  - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  environment:
+  - VIRTUAL_HOST=wiki.supermarches-cooperatifs.fr
+  ports:
+  - "80:80"
 dokuwiki:
-	image: msalcedogomes/docker-dokuwiki
-    volumes:
-    - ./data/www:/var/www
-	- ./supervisord.conf:/etc/supervisord.conf:ro
-	- ./start.sh:/start.sh:ro
+  image: msalcedogomes/docker-dokuwiki
+  volumes:
+  - ./data/www:/var/www
+  - ./supervisord.conf:/etc/supervisord.conf:ro
+  - ./start.sh:/start.sh:ro
