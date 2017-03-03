@@ -16,6 +16,8 @@ RUN apk --no-cache add \
 	(sed -i -e 's/dl-5/dl-6/g' /etc/apk/repositories && apk --no-cache add \
     php7 php7-fpm php7-gd php7-session php7-xml nginx supervisor curl tar unzip)
 
+RUN mkdir -p /run/nginx
+
 RUN echo "cgi.fix_pathinfo = 0;" >> /etc/php7/php-fpm.ini && \
     sed -i -e "s|;daemonize\s*=\s*yes|daemonize = no|g" /etc/php7/php-fpm.conf && \
     sed -i -e "s|listen\s*=\s*127\.0\.0\.1:9000|listen = /var/run/php-fpm7.sock|g" /etc/php7/php-fpm.d/www.conf && \
