@@ -4,8 +4,8 @@ dokuwiki:
   - VIRTUAL_HOST=wiki.supermarches-cooperatifs.fr
   volumes:
   - ./data/www:/var/www
-  - ./supervisord.conf:/etc/supervisord.conf:ro
-  - ./start.sh:/start.sh:ro
-  - ./nginx.conf:/etc/nginx/nginx.conf:ro
+  - ./supervisord.conf:/etc/supervisord.conf
+  - ./start.sh:/start.sh
+  - ./nginx.conf:/etc/nginx/nginx.conf
   ports:
   - "80:80"
