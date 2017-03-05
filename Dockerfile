@@ -25,6 +25,6 @@ RUN echo "cgi.fix_pathinfo = 0;" >> /etc/php7/php-fpm.ini && \
     sed -i -e "s|;listen\.group\s*=\s*|listen.group = |g" /etc/php7/php-fpm.d/www.conf && \
     sed -i -e "s|;listen\.mode\s*=\s*|listen.mode = |g" /etc/php7/php-fpm.d/www.conf
 
-EXPOSE 80
+EXPOSE 80 443
 
 CMD /start.sh
