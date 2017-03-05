@@ -1,7 +1,7 @@
-FROM alpine:3.5
+FROM alpine:3.4
 MAINTAINER Ilya Stepanov <dev@ilyastepanov.com>
 
-RUN apk --no-cache add \
+RUN apk --no-cache --repository http://dl-cdn.alpinelinux.org/alpine/edge/community/ add \
     php7 php7-fpm php7-gd php7-session php7-openssl openssl php7-xml nginx supervisor curl tar unzip || \
 	(sed -i -e 's/dl-cdn/dl-1/g' /etc/apk/repositories && apk --no-cache add \
     php7 php7-fpm php7-gd php7-session php7-openssl openssl php7-xml nginx supervisor curl tar unzip) || \
