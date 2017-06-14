@@ -39,7 +39,8 @@ RUN for plugin in \
         "move https://github.com/michitux/dokuwiki-plugin-move/ aca0c0cdcd70906f02bd35532f4b036a574fd484" \
         "wrap https://github.com/selfthinker/dokuwiki_plugin_wrap/ d601d9a5ca60075420f012d0c97e8a3b5600cd16" \
         "gallery https://github.com/splitbrain/dokuwiki-plugin-gallery/ 3714020c63c650dc610b98ed20f79c5742fc15d3" \
-        "smtp https://github.com/splitbrain/dokuwiki-plugin-smtp 2017-02-08" \
+        "smtp https://github.com/splitbrain/dokuwiki-plugin-smtp/ 2017-02-08" \
+        "backup https://github.com/tatewake/dokuwiki-plugin-backup/ cf619939c486430e578431948adf63793fea016d" \
     ; do \
         name=`echo $plugin|cut -d" " -f1`; \
         url=`echo $plugin|cut -d" " -f2`; \
