@@ -1,0 +1,8 @@
+dokuwiki:
+  build: ./docker-dokuwiki
+  environment:
+  - VIRTUAL_HOST=wiki.supermarches-cooperatifs.test
+  volumes:
+  - ./data/dokuwiki:/var/dokuwiki-storage
+  ports:
+  - "8000:443"
