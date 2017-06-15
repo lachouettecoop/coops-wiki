@@ -85,7 +85,7 @@ class auth_plugin_authdiscoursedb extends DokuWiki_Auth_Plugin {
 		if (!empty($user)) {
 			// do the checking here
 
-            $result = pg_query_params($this->db, 'SELECT id,username,password_hash,salt,name,email,admin FROM users WHERE active=true AND email=$1', array($user));
+            $result = pg_query_params($this->db, 'SELECT id,username,password_hash,salt,name,email,admin FROM users WHERE active=true AND (email=$1 OR username=$1)', array($user));
             $row = pg_fetch_assoc ($result, 0);
 
             if ($row === false) {
