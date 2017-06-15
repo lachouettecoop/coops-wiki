@@ -50,3 +50,9 @@ RUN for plugin in \
         (cd /var/www/lib/plugins/$name/ && curl -s -L "$url/archive/${version}.tar.gz" | tar xz --strip 1); \
     done
 
+# Modif for authdiscoursedb plugin support
+RUN apk --no-cache add php7-pgsql \
+    && (echo 'env[POSTGRES_PORT] = $POSTGRES_PORT' >> /etc/php7/php-fpm.d/www.conf) \
+    && (echo 'env[POSTGRES_ENV_POSTGRES_USER] = $POSTGRES_ENV_POSTGRES_USER' >> /etc/php7/php-fpm.d/www.conf) \
+    && (echo 'env[POSTGRES_ENV_POSTGRES_PASSWORD] = $POSTGRES_ENV_POSTGRES_PASSWORD' >> /etc/php7/php-fpm.d/www.conf)
+

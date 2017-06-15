@@ -1,0 +1,7 @@
+base   authdiscoursedb
+author La Chouette Coop
+email  info@lachouettecoop.fr
+date   2017-06-14
+name   Discourse DB auth plugin
+desc   Allow user authentication with Discourse's PostgreSQL database access.
+url    https://github.com/lachouettecoop/coops-wiki
