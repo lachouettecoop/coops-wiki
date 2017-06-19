@@ -35,13 +35,13 @@ class auth_plugin_authdiscoursedb extends DokuWiki_Auth_Plugin {
         $this->cando['external']    = true; // does the module do external auth checking?
         $this->cando['logout']      = true; // can the user logout again? (eg. not possible with HTTP auth)
 
-
         $dbhost = parse_url(getenv('POSTGRES_PORT'), PHP_URL_HOST);
         $dbport = parse_url(getenv('POSTGRES_PORT'), PHP_URL_PORT);
         $dbuser = getenv('POSTGRES_ENV_POSTGRES_USER');
         $dbpass = getenv('POSTGRES_ENV_POSTGRES_PASSWORD');
-        $dbstring = 'host=' . $dbhost . ' port=' . $dbport . ' dbname=discourse user=' . $dbuser . ' password=' . $dbpass;
+        $dbname = 'discourse';
 
+        $dbstring = 'host=' . $dbhost . ' port=' . $dbport . ' dbname=' . $dbname ' user=' . $dbuser . ' password=' . $dbpass;
         $this->db = pg_connect($dbstring);
 
         if ($this->db === false) {
@@ -70,54 +70,57 @@ class auth_plugin_authdiscoursedb extends DokuWiki_Auth_Plugin {
     public function trustExternal($user, $pass, $sticky = false) {
 
         global $USERINFO;
-		global $conf;
- 
-		$sticky ? $sticky = true : $sticky = false; //sanity check
- 
-		if (!empty($_SESSION[DOKU_COOKIE]['auth']['info'])) {
-			$USERINFO['name'] = $_SESSION[DOKU_COOKIE]['auth']['info']['user'];
-			$USERINFO['mail'] = $_SESSION[DOKU_COOKIE]['auth']['info']['mail'];
-			$USERINFO['grps'] = $_SESSION[DOKU_COOKIE]['auth']['info']['grps'];
-			$_SERVER['REMOTE_USER'] = $_SESSION[DOKU_COOKIE]['auth']['user'];
-			return true;
-		}
- 
-		if (!empty($user)) {
-			// do the checking here
+        global $conf;
 
-            $result = pg_query_params($this->db, 'SELECT id,username,password_hash,salt,name,email,admin FROM users WHERE active=true AND (email=$1 OR username=$1)', array($user));
-            $row = pg_fetch_assoc ($result, 0);
+        $sticky ? $sticky = true : $sticky = false; //sanity check
+
+        if (!empty($_SESSION[DOKU_COOKIE]['auth']['info'])) {
+            $USERINFO['name'] = $_SESSION[DOKU_COOKIE]['auth']['info']['user'];
+            $USERINFO['mail'] = $_SESSION[DOKU_COOKIE]['auth']['info']['mail'];
+            $USERINFO['grps'] = $_SESSION[DOKU_COOKIE]['auth']['info']['grps'];
+            $_SERVER['REMOTE_USER'] = $_SESSION[DOKU_COOKIE]['auth']['user'];
+            return true;
+        }
+
+        if (!empty($user)) {
+            // do the checking here
+
+            $result = pg_query_params($this->db,
+                'SELECT id, username, password_hash, salt, name, email, admin' .
+                ' FROM users' .
+                ' WHERE active=true' .
+                '   AND (email=$1 OR username=$1)',
+                array($user));
+            $row = pg_fetch_assoc ($result);
 
             if ($row === false) {
-				msg('Incorrect username or password.');
+                msg('Incorrect username or password.');
                 return false;
             }
 
-            if ($row['password_hash'] != hash_pbkdf2('sha256', $pass, $row['salt'] , 64000)) {
-				msg('Incorrect username or password.');
-				return false;
-			}
+            $pbkdf2_hash = hash_pbkdf2('sha256', $pass, $row['salt'] , 64000);
 
-            if (in_array($user, explode(" ",$this->getConf('admin_users')))) {
-                $row['admin'] = true;
+            if ($row['password_hash'] != $pbkdf2_hash) {
+                msg('Incorrect username or password.');
+                return false;
             }
 
             $groups = $row['admin'] == true ? array('admin','user'): array( 'user');
- 
-			// set the globals if authed
-			$USERINFO['name'] = $row['username'];
-			$USERINFO['mail'] = $row['email'];
-			$USERINFO['grps'] = $groups;
 
-			$_SERVER['REMOTE_USER'] = $row['name'];
-			$_SESSION[DOKU_COOKIE]['auth']['user'] = $row['username'];
-			$_SESSION[DOKU_COOKIE]['auth']['mail'] = $row['email'];
-			$_SESSION[DOKU_COOKIE]['auth']['pass'] = $pass;
-			$_SESSION[DOKU_COOKIE]['auth']['info'] = $USERINFO;
-			return true;
-		} else {
-			return false;
-		}
+            // set the globals if authed
+            $USERINFO['name'] = $row['username'];
+            $USERINFO['mail'] = $row['email'];
+            $USERINFO['grps'] = $groups;
+
+            $_SERVER['REMOTE_USER'] = $row['username'];
+            $_SESSION[DOKU_COOKIE]['auth']['user'] = $row['username'];
+            $_SESSION[DOKU_COOKIE]['auth']['mail'] = $row['email'];
+            $_SESSION[DOKU_COOKIE]['auth']['pass'] = $pass;
+            $_SESSION[DOKU_COOKIE]['auth']['info'] = $USERINFO;
+            return true;
+        } else {
+            return false;
+        }
     }
 
     /**

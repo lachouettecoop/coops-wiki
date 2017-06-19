@@ -4,9 +4,10 @@ dokuwiki:
   - VIRTUAL_HOST=wiki.supermarches-cooperatifs.test
   volumes:
   - ./data/dokuwiki:/var/dokuwiki-storage
-  - ./plugins/authdiscoursedb:/var/www/lib/plugins/authdiscoursedb
-  ports:
-  - "8000:80"
+  #- ./plugins/authdiscoursedb:/var/www/lib/plugins/authdiscoursedb
+  #  # plugin to authenticate with a direct connection to a Discourse PostgreSQL database
   #external_links:
   #- coopsforum_postgres_1:postgres
   #  # link to https://github.com/lachouettecoop/coops-forum container for authdiscoursedb plugin database access
+  ports:
+  - "8000:80"

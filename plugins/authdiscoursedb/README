@@ -9,7 +9,11 @@ If you install this plugin manually, make sure it is installed in
 lib/plugins/authdiscoursedb/ - if the folder is called different it
 will not work!
 
-This plugin expect some environement variables to be set.
+This plugin expect some environement variables to be set:
+ - POSTGRES_PORT, e.g. "tcp://localhost:5432"
+ - POSTGRES_ENV_POSTGRES_USER
+ - POSTGRES_ENV_POSTGRES_PASSWORD
+It will connect to the database named "discourse".
 
 Please refer to http://www.dokuwiki.org/plugins for additional info
 on how to install plugins in DokuWiki.
