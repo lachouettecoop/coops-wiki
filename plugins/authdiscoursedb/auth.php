@@ -41,7 +41,7 @@ class auth_plugin_authdiscoursedb extends DokuWiki_Auth_Plugin {
         $dbpass = getenv('POSTGRES_ENV_POSTGRES_PASSWORD');
         $dbname = 'discourse';
 
-        $dbstring = 'host=' . $dbhost . ' port=' . $dbport . ' dbname=' . $dbname ' user=' . $dbuser . ' password=' . $dbpass;
+        $dbstring = 'host=' . $dbhost . ' port=' . $dbport . ' dbname=' . $dbname . ' user=' . $dbuser . ' password=' . $dbpass;
         $this->db = pg_connect($dbstring);
 
         if ($this->db === false) {
