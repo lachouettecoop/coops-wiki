@@ -2,9 +2,9 @@
 FROM alpine:3.6
 MAINTAINER Ilya Stepanov <dev@ilyastepanov.com>
 
-ENV DOKUWIKI_VERSION 2017-02-19b
+ENV DOKUWIKI_VERSION 2020-07-29
 
-RUN apk --no-cache add php7 php7-fpm php7-gd php7-session php7-xml php7-openssl nginx supervisor curl tar
+RUN apk --no-cache add php7 php7-fpm php7-gd php7-json php7-session php7-xml php7-dom php7-zlib php7-openssl nginx supervisor curl tar
 
 RUN mkdir -p /run/nginx
 
@@ -33,14 +33,16 @@ CMD /start.sh
 
 # Plugins Installation
 RUN for plugin in \
-        "todo https://github.com/leibler/dokuwiki-plugin-todo/ 02f3c00c0f158ebbfdaf99fbbcf47aafad131612" \
-        "edittable https://github.com/cosmocode/edittable/ 2017-06-07" \
-        "encryptedpasswords https://github.com/ssahara/dw-plugin-encryptedpasswords/ 172e3564af45333108caf0e8d239b354b1acedaa" \
-        "move https://github.com/michitux/dokuwiki-plugin-move/ aca0c0cdcd70906f02bd35532f4b036a574fd484" \
-        "wrap https://github.com/selfthinker/dokuwiki_plugin_wrap/ d601d9a5ca60075420f012d0c97e8a3b5600cd16" \
-        "gallery https://github.com/splitbrain/dokuwiki-plugin-gallery/ 3714020c63c650dc610b98ed20f79c5742fc15d3" \
-        "smtp https://github.com/splitbrain/dokuwiki-plugin-smtp/ 2017-02-08" \
-        "backup https://github.com/tatewake/dokuwiki-plugin-backup/ cf619939c486430e578431948adf63793fea016d" \
+        "todo https://github.com/leibler/dokuwiki-plugin-todo/ 2449f39441f013902e2d9f2bc5d5da6b92cbaf95" \
+        "edittable https://github.com/cosmocode/edittable/ 2020-08-12" \
+        "encryptedpasswords https://github.com/ssahara/dw-plugin-encryptedpasswords/ 120f2532d9559b2a32785b1f09fb99cb1a5201cc" \
+        "move https://github.com/michitux/dokuwiki-plugin-move/ efb8e0ee8d595fc40ba34c53ace846214affbc2f" \
+        "wrap https://github.com/selfthinker/dokuwiki_plugin_wrap/ 9ad5fdffdf97087aef0399a82b24053bf58e4298" \
+        "gallery https://github.com/splitbrain/dokuwiki-plugin-gallery/ bdb91e7ef5d94b2c9447f2860b9b0efe4d5dc5a7" \
+        "smtp https://github.com/splitbrain/dokuwiki-plugin-smtp/ 2020-02-24" \
+        "backup https://github.com/tatewake/dokuwiki-plugin-backup/ 297168803cb0903f2e3cdc066a59597d9c0559ae" \
+	"ckgedit https://github.com/turnermm/ckgedit 30a6d4f9b3b98ec0c7b247bcac173da6d2c184db" \
+	"authsaml https://github.com/pitbulk/dokuwiki-saml 6161c7338d5464fdc8b635e6b96a88615c9ee287" \
     ; do \
         name=`echo $plugin|cut -d" " -f1`; \
         url=`echo $plugin|cut -d" " -f2`; \
@@ -50,9 +52,7 @@ RUN for plugin in \
         (cd /var/www/lib/plugins/$name/ && curl -s -L "$url/archive/${version}.tar.gz" | tar xz --strip 1); \
     done
 
-# Modif for authdiscoursedb plugin support
-RUN apk --no-cache add php7-pgsql \
-    && (echo 'env[POSTGRES_PORT] = $POSTGRES_PORT' >> /etc/php7/php-fpm.d/www.conf) \
-    && (echo 'env[POSTGRES_ENV_POSTGRES_USER] = $POSTGRES_ENV_POSTGRES_USER' >> /etc/php7/php-fpm.d/www.conf) \
-    && (echo 'env[POSTGRES_ENV_POSTGRES_PASSWORD] = $POSTGRES_ENV_POSTGRES_PASSWORD' >> /etc/php7/php-fpm.d/www.conf)
-
+# Install SimpleSamlPHP needed by authsaml plugin
+RUN mkdir -p /var/www/simplesamlphp && \
+	cd /var/www/simplesamlphp && \
+	curl -s -L "https://github.com/simplesamlphp/simplesamlphp/releases/download/v1.18.8/simplesamlphp-1.18.8.tar.gz" | tar xz --strip 1
